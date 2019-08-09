@@ -33,9 +33,12 @@ public class BaseTest {
         driver.manage().window().maximize();
 
         //wait implicit
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         Loadproperty();
+
+
+
 
 
 
@@ -58,6 +61,7 @@ public class BaseTest {
         return property.getProperty(key);
 
     }
+
 
 
 

@@ -10,7 +10,7 @@ import java.util.Random;
 public class HelperMethods {
 
 
-    WebDriver driver;
+    public WebDriver driver;
 
 
     //declarare constructor
@@ -21,19 +21,12 @@ public class HelperMethods {
     }
 
 
-    //click method
-    public void clickMethod(WebElement element){
-
-        element.click();
-
-    }
-
 
     //select by value from a dropdouwn list method
     public void selectByValueDropdownMethod(WebElement element, String value){
 
         Select elementselect = new Select(element);
-        elementselect.selectByVisibleText(value);
+        elementselect.selectByValue(value);
 
     }
 
@@ -47,6 +40,14 @@ public class HelperMethods {
         }
 
     }
+
+    public void clickMethod(WebElement element){
+        element.click();
+    }
+
+
+
+
 
 
 
