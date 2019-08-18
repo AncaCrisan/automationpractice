@@ -41,10 +41,6 @@ public class HelperMethods {
 
     }
 
-    public void clickMethod(WebElement element){
-        element.click();
-    }
-
 
 
 

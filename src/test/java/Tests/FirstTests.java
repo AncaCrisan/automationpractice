@@ -7,12 +7,14 @@ import net.bytebuddy.asm.Advice;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.lang.ref.WeakReference;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -42,12 +44,19 @@ public class FirstTests extends BaseTest {
         WebElement languageweb = driver.findElement(By.xpath("//li[@class='language-selector']//button"));//-->  //html/body/div[1]/div[1]/div/div/div[2]/nav/div/ul/li[4]/div/div/button
         languageweb.click();
         WebElement ROweb = driver.findElement(By.xpath("//li[@class='selected active']"));
+        String actualRO = ROweb.getText();
+        int actualROsize = actualRO.length();
+
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         ROweb.click();
+
+        String expectedRo = "RO";
+        int expectedROsize = expectedRo.length();
+        Assert.assertEquals(expectedROsize,actualROsize);
 
 
 
@@ -68,12 +77,12 @@ public class FirstTests extends BaseTest {
         //select a cinema
         WebElement selecteazacinemaweb = driver.findElement(By.xpath("//button[@data-id='select8']"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", selecteazacinemaweb);//scroll pana la webelementul dorit
-//        try {
-//            Thread.sleep(7000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        new WebDriverWait(driver,10000).until(ExpectedConditions.visibilityOf(selecteazacinemaweb));
+
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         selecteazacinemaweb.click();
 
@@ -83,15 +92,17 @@ public class FirstTests extends BaseTest {
         int index = random.nextInt(15);
         Actions action = new Actions(driver);
         action.moveToElement(cinemaOptionsWeb.get(index)).build().perform();
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         String actualcinema = cinemaOptionsWeb.get(index).getText().toUpperCase() + "\n" + " ";
         int actualsize = actualcinema.length();
 
-//        new WebDriverWait(driver,10000).until(ExpectedConditions.visibilityOf(cinemaOptionsWeb.get(index)));
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+//        JavascriptExecutor je = (JavascriptExecutor) driver;
+//        je.executeScript("arguments[0].scrollIntoView(true);",cinemaOptionsWeb.get(index));
 
         cinemaOptionsWeb.get(index).click();
 
@@ -123,15 +134,15 @@ public class FirstTests extends BaseTest {
 
 
         //validate film title
-        String expectedfilm = "Furios si iute:Hobbs & Shaw";
+        String expectedfilm = alegefilmweb.getText();
         int expectedfilmsize = expectedfilm.length();
         Assert.assertEquals(expectedfilmsize,actualfilmsize);
 
 
 
         //select day
-        WebElement aziweb = driver.findElement(By.xpath("//button[@data-automation-id='day_1']"));
-        aziweb.click();
+        WebElement ziweb = driver.findElement(By.xpath("//button[@data-automation-id='day_1']"));
+        ziweb.click();
 
 
 
@@ -144,20 +155,6 @@ public class FirstTests extends BaseTest {
         int expecteddatasize = expecteddata.length();
 
         Assert.assertEquals(expecteddatasize,actualdatasize);
-
-
-
-
-        //open and close calendar
-        WebElement calendarweb = driver.findElement(By.xpath("//button[@title='Alege o dată']"));
-        calendarweb.click();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        WebElement closecalendar = driver.findElement(By.xpath("//span[@class='fa fa-times pull-right datepicker-close']"));
-        closecalendar.click();
 
 
 
@@ -295,14 +292,23 @@ public class FirstTests extends BaseTest {
         ticketWeb.click();
 
         List<WebElement> ticketListWeb = driver.findElements(By.xpath("//select[@id='ddQunatity_1']/option"));
+
+
         for(int i = 0 ; i < ticketListWeb.size() ; i++){
             if(i == 2){
                 ticketListWeb.get(i).click();
             }
         }
-
         //click Selecteaza Locurile button
         selecteazaLocurileButton.click();
+
+
+
+        //validate that 2 seats are selected
+        WebElement seatmessageweb = driver.findElement(By.xpath("//div[@id='seatselection']"));
+        String actualSeatMessage = seatmessageweb.getText();
+        String expectSeatMessage = BaseTest.getValue("seatmessage");
+        Assert.assertEquals(expectSeatMessage,actualSeatMessage);
 
 
 
@@ -314,6 +320,91 @@ public class FirstTests extends BaseTest {
 
         //validate new page
         selector.validatePageTitle(BaseTest.getValue("pagemessage3"),driver);
+
+
+
+        //validate "SELECTEAZA LOCUL" message
+        WebElement loculmessageweb = driver.findElement(By.xpath("//h1"));
+        String expectMessage = BaseTest.getValue("message10");
+        String actualMessage = loculmessageweb.getText();
+        Assert.assertEquals(expectMessage,actualMessage);
+
+
+
+        //validate "Disponibil" message
+        WebElement disponibilweb = driver.findElement(By.xpath("//span[contains(text(),'Disponibil')]"));
+        String expectDisponibil = BaseTest.getValue("dispmessage");
+        String actualDisponibil = disponibilweb.getText();
+        Assert.assertEquals(expectDisponibil,actualDisponibil);
+
+
+
+        //validate disponibil image
+        WebElement imageWebElement1 = driver.findElement(By.xpath("//img[@src='Assets/Images/PL_RES/SeatAvailable.png']"));
+        if(imageWebElement1.isDisplayed())
+        {
+            Assert.assertTrue(imageWebElement1.isDisplayed());
+        }
+
+
+
+        //validate "Disponibil pentru achizitii online" message
+        WebElement dispachizitiiweb = driver.findElement(By.xpath("//span[contains(text(),'Disponibile pentru achizitii online')]"));
+        String expectDispAchizitii = BaseTest.getValue("achimessage");
+        String actuDispAchizitii = dispachizitiiweb.getText();
+        Assert.assertEquals(expectDispAchizitii,actuDispAchizitii);
+
+
+
+        //validate "disponibil pt achizitii online" image
+        WebElement imageWebElement2 = driver.findElement(By.xpath("//img[@src='Assets/Images/PL_RES/PremiumSeatAvailable.png']"));
+        if(imageWebElement2.isDisplayed())
+        {
+            Assert.assertTrue(imageWebElement2.isDisplayed());
+        }
+
+
+
+        //validate "Indisponibil" message
+        WebElement indisponibilweb = driver.findElement(By.xpath("//span[contains(text(),'Indisponibil')]"));
+        String expectIndisponibil = BaseTest.getValue("indispmessage");
+        String actuIndisponibil = indisponibilweb.getText();
+        Assert.assertEquals(expectIndisponibil,actuIndisponibil);
+
+
+
+        //validate "indisponibil" image
+        WebElement imageWebElement3 = driver.findElement(By.xpath("//img[@src='Assets/Images/PL_RES/SeatUnavailable.png']"));
+        if(imageWebElement3.isDisplayed())
+        {
+            Assert.assertTrue(imageWebElement3.isDisplayed());
+        }
+
+
+
+        //validate "Alegerea ta" message
+        WebElement alegweb = driver.findElement(By.xpath("//span[contains(text(),'Alegerea ta')]"));
+        String expectaleg = BaseTest.getValue("alegmessage");
+        String actualeg = alegweb.getText();
+        Assert.assertEquals(expectaleg,actualeg);
+
+
+
+        //validate "alegerea ta" image
+        WebElement imageWebElement4 = driver.findElement(By.xpath("//img[@src='Assets/Images/PL_RES/SeatSelected.png']"));
+        if(imageWebElement4.isDisplayed())
+        {
+            Assert.assertTrue(imageWebElement4.isDisplayed());
+        }
+
+
+
+        //validate screen image
+        WebElement imageWebElement = driver.findElement(By.xpath("//img[@src='Assets/Images/PL_RES/screen.png']"));
+        if(imageWebElement.isDisplayed())
+        {
+            Assert.assertTrue(imageWebElement.isDisplayed());
+        }
 
 
 
@@ -334,6 +425,31 @@ public class FirstTests extends BaseTest {
         //click on "RESETARE ZOOM" button
         WebElement resetareZoomweb = driver.findElement(By.xpath("//button[@class='reset']"));
         resetareZoomweb.click();
+
+
+
+        //click on PASUL URMATOR button without selecting the seats on map
+        WebElement pasurmatorweb = driver.findElement(By.id("btnNext"));
+        pasurmatorweb.click();
+
+        WebElement locEroorMsjweb = driver.findElement(By.xpath("//div[contains(text(),'Te rog selecteaza locul/locurile')]"));
+        String locActualMessage = locEroorMsjweb.getText();
+        String locExpectedMessage = "Te rog selecteaza locul/locurile";
+        Assert.assertEquals(locExpectedMessage,locActualMessage);
+
+
+
+        //select 2 seats on seat map
+//        WebElement locweb1 = driver.findElement(By.xpath("//div[@id='accesibleSeatPlanContainer']/table/tr/td/a[@data-state='0']"));
+//        //locweb1.click();
+//
+//        Actions builder = new Actions(driver);
+//        Action moveandclickseat = builder.moveToElement(locweb1).click().build();
+//        moveandclickseat.perform();
+
+
+
+
 
 
 
